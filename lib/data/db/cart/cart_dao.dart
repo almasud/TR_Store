@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2024.
+ * Created by: Abdullah Al Masud
+ * Created on: 17/2/2024
+ */
+
+import 'package:drift/drift.dart';
+import 'package:tr_store/data/db/app_database.dart';
+import 'package:tr_store/data/db/cart/carts.dart';
+import 'package:tr_store/domain/models/cart.dart';
+
+part 'cart_dao.g.dart';
+
+@DriftAccessor(tables: [Carts])
+class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
+  CartDao(AppDatabase appDatabase) : super(appDatabase);
+
+  Future<void> insertCart(Product product, int productQuantity) async {
+    into(carts).insertOnConflictUpdate(CartsCompanion.insert(
+        productQuantity: productQuantity, productId: product.id));
+  }
+
+  Stream<int?> getCartsCount() {
+    //Create expression of count
+    var countExp = carts.id.count();
+    final query = selectOnly(carts)..addColumns([countExp]);
+
+    return query.map((row) => row.read(countExp)).watchSingle();
+  }
+
+  // Define a DAO method to perform a join operation
+  Future<List<CartWithProduct>> getCartsWithProducts() async {
+    // Perform the join operation using the join method
+    final query = select(carts).join([
+      innerJoin(products, carts.productId.equalsExp(products.id)),
+    ]);
+
+    // Map the result to a custom data class
+    return await query.map((row) {
+      return CartWithProduct(
+        cartsData: row.readTable(carts),
+        productsData: row.readTable(products),
+      );
+    }).get();
+  }
+}

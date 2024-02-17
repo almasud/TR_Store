@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/domain/models/product.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -71,10 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, index) {
             Product product = dummyProducts[index];
             return ProductItem(
-                name: product.title ?? "",
-                description: product.content ?? "",
-                price: (product.userId ?? -1).toDouble(),
-                thumbnailUrl: product.thumbnail ?? "",
+                name: product.title,
+                description: product.content,
+                price: (product.userId).toDouble(),
+                thumbnailUrl: product.thumbnail,
                 onAddToCart: _addToCart);
           }), // This trailing comma makes auto-formatting nicer for build methods.
     );
