@@ -4,10 +4,11 @@
  * Created on: 18/2/2024
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tr_store/data/db/app_database.dart';
-import 'package:tr_store/ui/utils/app_strings.dart';
-import 'package:tr_store/ui/utils/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/utils/app_constants.dart';
 
 class CartScreen extends StatefulWidget {
   final List<Product> products;
@@ -48,11 +49,12 @@ class _CartScreenState extends State<CartScreen> {
                         // Thumbnail
                         ClipRRect(
                           borderRadius: BorderRadius.circular(4),
-                          child: Image.network(
-                            product.image,
+                          child: CachedNetworkImage(
+                            imageUrl: product.image,
                             width: 80,
                             height: 80,
-                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
                           ),
                         ),
                         const SizedBox(width: 16),

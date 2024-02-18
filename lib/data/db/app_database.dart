@@ -44,7 +44,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
     final file =
-        File(p.join(dbFolder.path, 'com.github.almasud.tr_store.sqlite'));
+        File(p.join(dbFolder.path, 'tr_store.sqlite'));
 
     // Also work around limitations on old Android versions
     if (Platform.isAndroid) {

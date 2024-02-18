@@ -7,7 +7,7 @@
 import 'package:drift/drift.dart';
 import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/data/db/cart/carts.dart';
-import 'package:tr_store/domain/models/cart.dart';
+import 'package:tr_store/domain/models/cart_with_product.dart';
 
 part 'cart_dao.g.dart';
 

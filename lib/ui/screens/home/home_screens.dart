@@ -4,16 +4,22 @@
  * Created on: 16/2/2024
  */
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/db/app_database.dart';
-import 'package:tr_store/domain/models/product.dart';
+import 'package:tr_store/data/di/app_component.dart';
+import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
-import 'package:tr_store/ui/utils/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/utils/app_constants.dart';
+
+import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
-
   final String title;
+
+  const HomeScreen({super.key, required this.title});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,11 +27,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _cartItemCount = 0;
+  final _homeBloc = getIt<HomeBloc>();
 
   void _addToCart() {
     setState(() {
       _cartItemCount++;
     });
+  }
+
+  @override
+  void dispose() {
+    _homeBloc.close();
+    super.dispose();
   }
 
   @override
@@ -40,7 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Stack(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.shopping_cart, color: Colors.white,),
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
                   onPressed: () {
                     Navigator.pushNamed(context, RoutePath.cart);
                   },
@@ -71,17 +87,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: ListView.builder(
-            itemCount: dummyProducts.length,
-            itemBuilder: (context, index) {
-              Product product = dummyProducts[index];
-              return ProductItem(
-                  name: product.title,
-                  description: product.content,
-                  price: (product.userId).toDouble(),
-                  thumbnailUrl: product.thumbnail,
-                  onAddToCart: _addToCart);
-            }), // This trailing comma makes auto-formatting nicer for build methods.
+        body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            switch (state.uiStatus) {
+              case HomeUiStatus.loading:
+                return const Center(child: CircularProgressIndicator(),);
+              case HomeUiStatus.success:
+                return ((state.products?.length ?? 0) > 0)
+                    ? ListView.builder(
+                        itemCount: state.products?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          Product? product = state.products?[index];
+                          return ProductItem(
+                              name: product?.title ?? "",
+                              description: product?.content ?? "",
+                              price: (product?.userId ?? 0).toDouble(),
+                              thumbnailUrl: product?.thumbnail ?? "",
+                              onAddToCart: _addToCart);
+                        })
+                    : const MessageView(message: AppString.dataNotFound);
+              case HomeUiStatus.failed:
+                return const ErrorMessageView(message: AppString.failedToLoadData);
+            }
+          },
+        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
   }
@@ -116,11 +145,19 @@ class ProductItem extends StatelessWidget {
             // Thumbnail
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                thumbnailUrl,
+              // child: Image.network(
+              //   thumbnailUrl,
+              //   width: 80,
+              //   height: 80,
+              //   fit: BoxFit.cover,
+              // ),
+              child: CachedNetworkImage(
+                imageUrl: thumbnailUrl,
                 width: 80,
                 height: 80,
-                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
             const SizedBox(width: 16),
@@ -164,7 +201,10 @@ class ProductItem extends StatelessWidget {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
               ),
-              child: const Icon(Icons.shopping_cart, color: Colors.white,),
+              child: const Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
             ),
           ],
         ),

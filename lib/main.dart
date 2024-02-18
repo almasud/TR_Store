@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:tr_store/domain/models/product.dart';
+import 'package:tr_store/data/di/app_component.dart';
 import 'package:tr_store/ui/routes/app_route.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 
 import 'data/db/app_database.dart';
 
+late AppDatabase appDatabase;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final database = AppDatabase();
+  AppComponent().init();
+  appDatabase = AppDatabase();
   // database.delete(database.product).go();
-
-  debugPrint("database: $database");
-
-  database.productDao.insertProducts(dummyProducts);
-  final products = database.productDao.getProducts();
-  products.listen((event) {
-    debugPrint('items size: ${event.length}');
-    debugPrint('items in database: $event');
-  });
+  debugPrint("database: $appDatabase");
 
   runApp(const MyApp());
 }

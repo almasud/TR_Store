@@ -4,7 +4,7 @@
  * Created on: 18/2/2024
  */
 
-import 'package:tr_store/domain/models/cart.dart';
+import 'package:tr_store/domain/models/cart_with_product.dart';
 
 abstract class CartRepo {
 

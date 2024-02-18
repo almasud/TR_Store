@@ -38,7 +38,7 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
         .getSingle();
   }
 
-  Stream<List<Product>> getProducts() {
-    return select(products).watch();
+  Future<List<Product>> getProducts() {
+    return select(products).get();
   }
 }

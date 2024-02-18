@@ -4,37 +4,68 @@
  * Created on: 18/2/2024
  */
 
+import 'dart:convert';
+
 import 'package:tr_store/data/db/app_database.dart';
-import 'package:tr_store/data/di/app_component.dart';
-import 'package:tr_store/domain/models/cart.dart';
+import 'package:tr_store/domain/models/cart_with_product.dart';
 import 'package:tr_store/domain/repo/cart_repo.dart';
+import 'package:tr_store/main.dart';
+
+final dummyCarts = [
+  const Cart(
+    id: 1,
+    productQuantity: 2,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 1,
+  ),
+  const Cart(
+    id: 2,
+    productQuantity: 1,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 3,
+  ),
+  const Cart(
+    id: 3,
+    productQuantity: 4,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 2,
+  ),
+];
+
+List<Cart> cartsFromJson(String str) =>
+    List<Cart>.from(json.decode(str).map((x) => Cart.fromJson(x)));
+
+String cartsToJson(List<Cart> carts) =>
+    json.encode(carts.map((x) => x.toJson()));
 
 class CartRepoImpl extends CartRepo {
-  final _appDatabase = getIt<AppDatabase>();
 
   @override
   Future<int> deleteCart(cartId) {
-    return _appDatabase.cartDao.deleteCart(cartId);
+    return appDatabase.cartDao.deleteCart(cartId);
   }
 
   @override
   Stream<int?> getCartsCount() {
-    return _appDatabase.cartDao.getCartsCount();
+    return appDatabase.cartDao.getCartsCount();
   }
 
   @override
   Future<List<CartWithProduct>> getCartsWithProducts() {
-    return _appDatabase.cartDao.getCartsWithProducts();
+    return appDatabase.cartDao.getCartsWithProducts();
   }
 
   @override
   Future<void> insertCart(int productId, int productQuantity) {
-    return _appDatabase.cartDao.insertCart(productId, productQuantity);
+    return appDatabase.cartDao.insertCart(productId, productQuantity);
   }
 
   @override
   Future<int> updateProductQuantity(int productId, int newProductQuantity) {
-    return _appDatabase.cartDao
+    return appDatabase.cartDao
         .updateProductQuantity(productId, newProductQuantity);
   }
 }
