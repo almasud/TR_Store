@@ -30,57 +30,59 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: widget.title,
-        showBackButton: false,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart, color: Colors.white,),
-                onPressed: () {
-                  Navigator.pushNamed(context, RoutePath.cart);
-                },
-              ),
-              Visibility(
-                visible: _cartItemCount > 0,
-                child: Positioned(
-                  right: 2,
-                  top: 2,
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.red,
-                      radius: 16,
-                      child: Text(
-                        '$_cartItemCount',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+        appBar: CustomAppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: widget.title,
+          showBackButton: false,
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart, color: Colors.white,),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutePath.cart);
+                  },
+                ),
+                Visibility(
+                  visible: _cartItemCount > 0,
+                  child: Positioned(
+                    right: 2,
+                    top: 2,
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        radius: 16,
+                        child: Text(
+                          '$_cartItemCount',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
+        body: ListView.builder(
+            itemCount: dummyProducts.length,
+            itemBuilder: (context, index) {
+              Product product = dummyProducts[index];
+              return ProductItem(
+                  name: product.title,
+                  description: product.content,
+                  price: (product.userId).toDouble(),
+                  thumbnailUrl: product.thumbnail,
+                  onAddToCart: _addToCart);
+            }), // This trailing comma makes auto-formatting nicer for build methods.
       ),
-      body: ListView.builder(
-          itemCount: dummyProducts.length,
-          itemBuilder: (context, index) {
-            Product product = dummyProducts[index];
-            return ProductItem(
-                name: product.title,
-                description: product.content,
-                price: (product.userId).toDouble(),
-                thumbnailUrl: product.thumbnail,
-                onAddToCart: _addToCart);
-          }), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

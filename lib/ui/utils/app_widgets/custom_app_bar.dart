@@ -30,45 +30,43 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: widget.backgroundColor ??
-            Theme.of(context).colorScheme.inversePrimary,
-        width: double.infinity,
-        height: kToolbarHeight,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Row(
-            children: [
-              if (widget.showBackButton)
-                IconButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_outlined,
-                      size: 22,
-                      color: Colors.white,
-                    )),
-              if (widget.showBackButton)
-                const SizedBox(
-                  width: 8,
-                ),
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
+    return Container(
+      color: widget.backgroundColor ??
+          Theme.of(context).colorScheme.inversePrimary,
+      width: double.infinity,
+      height: kToolbarHeight,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16),
+        child: Row(
+          children: [
+            if (widget.showBackButton)
+              IconButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios_outlined,
+                    size: 22,
+                    color: Colors.white,
+                  )),
+            if (widget.showBackButton)
+              const SizedBox(
+                width: 8,
               ),
-              const Spacer(),
-              if (widget.actions != null && widget.actions!.isNotEmpty)
-                Row(
-                  children: widget.actions!,
-                )
-            ],
-          ),
+            Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+            const Spacer(),
+            if (widget.actions != null && widget.actions!.isNotEmpty)
+              Row(
+                children: widget.actions!,
+              )
+          ],
         ),
       ),
     );
