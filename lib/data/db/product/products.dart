@@ -17,9 +17,9 @@ class Products extends Table {
 
   TextColumn get thumbnail => text()();
 
-  TextColumn get publishedAt => text()();
+  TextColumn get publishedAt => text().nullable()();
 
-  TextColumn get updatedAt => text()();
+  TextColumn get updatedAt => text().nullable()();
 
   IntColumn get userId => integer()();
 }

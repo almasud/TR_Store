@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/domain/models/product.dart';
+import 'package:tr_store/ui/routes/route_path.dart';
+import 'package:tr_store/ui/utils/app_widgets/custom_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -29,16 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: widget.title,
+        showBackButton: false,
         actions: [
           Stack(
             children: [
               IconButton(
                 icon: const Icon(Icons.shopping_cart, color: Colors.white,),
                 onPressed: () {
-                  // Navigate to the cart page
+                  Navigator.pushNamed(context, RoutePath.cart);
                 },
               ),
               Visibility(

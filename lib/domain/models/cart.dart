@@ -86,9 +86,33 @@ String cartsToJson(List<Cart> carts) =>
 //
 // }
 
-class CartWithProduct {
-  final Cart cartsData;
-  final Product productsData;
+final dummyCarts = [
+  const Cart(
+    id: 1,
+    productQuantity: 2,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 1,
+  ),
+  const Cart(
+    id: 2,
+    productQuantity: 1,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 3,
+  ),
+  const Cart(
+    id: 3,
+    productQuantity: 4,
+    // publishedAt: DateTime.now(),
+    // updatedAt: DateTime.now(),
+    productId: 2,
+  ),
+];
 
-  CartWithProduct({required this.cartsData, required this.productsData});
+class CartWithProduct {
+  final Cart cart;
+  final Product product;
+
+  CartWithProduct({required this.cart, required this.product});
 }

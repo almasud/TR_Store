@@ -22,8 +22,8 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
             content: product.content,
             thumbnail: product.thumbnail,
             image: product.image,
-            publishedAt: product.publishedAt,
-            updatedAt: product.updatedAt,
+            publishedAt: Value(product.publishedAt),
+            updatedAt: Value(product.updatedAt),
             userId: product.userId),
         mode: InsertMode.insertOrReplace);
   }

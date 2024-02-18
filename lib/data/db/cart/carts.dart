@@ -12,9 +12,9 @@ class Carts extends Table {
 
   IntColumn get productQuantity => integer()();
 
-  DateTimeColumn get publishedAt => dateTime().check(publishedAt.isNull()).withDefault(currentDateAndTime)();
+  DateTimeColumn get publishedAt => dateTime().nullable().check(publishedAt.isNull()).withDefault(currentDateAndTime)();
 
-  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().nullable().withDefault(currentDateAndTime)();
 
   IntColumn get productId => integer().references(Products, #id)();
 }
