@@ -8,14 +8,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/db/app_database.dart';
-import 'package:tr_store/domain/models/cart_with_product.dart';
+import 'package:tr_store/ui/app_widgets/app_snack_bar.dart';
 import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
 import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
 import 'bloc/product_bloc.dart';
-import 'bloc/product_cart_bloc.dart';
+import '../bloc/product_cart_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -27,15 +27,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<CartWithProduct> _cartsWithProducts = [];
-
   void _addToCart(Product product) {
-    context
-        .read<ProductCartBloc>()
-        .add(AddProductToCartRequest(product: product));
-    // context
-    //     .read<ProductBloc>()
-    //     .add(FetchProductsFromRemote());
+    context.read<ProductCartBloc>().add(AddProductToCart(product: product));
   }
 
   @override
@@ -58,39 +51,44 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, RoutePath.cart);
                   },
                 ),
-                BlocBuilder<ProductCartBloc, ProductCartState>(
-                  builder: (context, state) {
-                    switch (state.uiStatus) {
-                      case ProductCartStatus.fetchCartsWithProductsSuccess:
-                        _cartsWithProducts = state.cartsWithProducts;
-                        debugPrint(
-                            "case fetchCartsWithProductsSuccess: ${_cartsWithProducts.length}");
-
-                        return _cartsWithProducts.isNotEmpty
-                            ? Positioned(
-                                right: 2,
-                                top: 2,
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    radius: 16,
-                                    child: Text(
-                                      '${_cartsWithProducts.length}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox();
-                      default:
-                        debugPrint("case default: ProductCartState: $state");
-                        return const SizedBox();
+                BlocConsumer<ProductCartBloc, ProductCartState>(
+                  listener: (context, state) {
+                    debugPrint("$HomeScreen: ProductCartState: $state");
+                    if (state.productCartStatus ==
+                        ProductCartStatus.addToCartFailed) {
+                      // AppSnackBar.show(
+                      //     context: context,
+                      //     message: AppString.addToCartSuccessFailed,
+                      //     color: Colors.redAccent);
+                      AppSnackBar.show(
+                          context: context,
+                          message: AppString.itSeemsAlreadyAddedToCart,
+                          color: Colors.blueAccent.withOpacity(0.7));
                     }
+                  },
+                  builder: (context, state) {
+                    return Visibility(
+                      visible: state.cartsWithProducts?.isNotEmpty ?? false,
+                      child: Positioned(
+                        right: 2,
+                        top: 2,
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.red,
+                            radius: 16,
+                            child: Text(
+                              '${state.cartsWithProducts?.length}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ],
@@ -110,24 +108,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: state.products.length,
                         itemBuilder: (context, index) {
                           Product? product = state.products[index];
-                          bool isAlreadyAdded = false;
-
-                          for (CartWithProduct cartWithProduct
-                              in _cartsWithProducts) {
-                            isAlreadyAdded =
-                                cartWithProduct.product.id == product.id;
-                          }
 
                           return ProductItem(
                               name: product.title,
                               description: product.content,
                               price: (product.userId).toDouble(),
                               thumbnailUrl: product.thumbnail,
-                              onAddToCart: !isAlreadyAdded
-                                  ? () => _addToCart(product)
-                                  : null);
+                              onAddToCart: () => _addToCart(product));
                         })
-                    : const MessageView(message: AppString.dataNotFound);
+                    : const MessageView(message: AppString.noDataFound);
               case ProductStatus.failed:
                 return const ErrorMessageView(
                     message: AppString.failedToLoadData);

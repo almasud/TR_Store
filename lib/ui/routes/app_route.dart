@@ -7,12 +7,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/di/app_component.dart';
-import 'package:tr_store/data/repo/cart_repo_impl.dart';
-import 'package:tr_store/data/repo/product_repo_impl.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/ui/screens/cart/cart_screen.dart';
 import 'package:tr_store/ui/screens/home/bloc/product_bloc.dart';
-import 'package:tr_store/ui/screens/home/bloc/product_cart_bloc.dart';
+import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
 import 'package:tr_store/ui/screens/home/home_screens.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
@@ -30,9 +28,9 @@ class AppRoute {
         );
       case RoutePath.cart:
         return MaterialPageRoute(
-          builder: (_) => CartScreen(
-            carts: dummyCarts,
-            products: dummyProducts,
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ProductCartBloc>(),
+            child: const CartScreen(),
           ),
         );
       default:

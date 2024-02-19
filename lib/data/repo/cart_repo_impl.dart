@@ -15,21 +15,18 @@ final dummyCarts = [
   const Cart(
     id: 1,
     productQuantity: 2,
-    // publishedAt: DateTime.now(),
     // updatedAt: DateTime.now(),
     productId: 1,
   ),
   const Cart(
     id: 2,
     productQuantity: 1,
-    // publishedAt: DateTime.now(),
     // updatedAt: DateTime.now(),
     productId: 3,
   ),
   const Cart(
     id: 3,
     productQuantity: 4,
-    // publishedAt: DateTime.now(),
     // updatedAt: DateTime.now(),
     productId: 2,
   ),
@@ -43,8 +40,8 @@ String cartsToJson(List<Cart> carts) =>
 
 class CartRepoImpl extends CartRepo {
   @override
-  Future<int> deleteCart(cartId) {
-    return appDatabase.cartDao.deleteCart(cartId);
+  Future<void> deleteCart(cartId) async {
+    appDatabase.cartDao.deleteCart(cartId);
   }
 
   @override

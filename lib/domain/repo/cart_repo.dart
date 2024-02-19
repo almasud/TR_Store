@@ -13,7 +13,7 @@ abstract class CartRepo {
 
   Future<int> insertCart(int productId, int productQuantity);
 
-  Future<int> deleteCart(cartId);
+  Future<void> deleteCart(cartId);
 
   Stream<List<CartWithProduct>> getCartsWithProducts();
 }

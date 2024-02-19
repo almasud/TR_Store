@@ -39,8 +39,8 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
     return query.map((row) => row.read(countExp)).watchSingle();
   }
 
-  Future<int> deleteCart(cartId) async {
-    return await (delete(carts)..where((t) => t.id.equals(cartId))).go();
+  Future<void> deleteCart(cartId) async {
+    await (delete(carts)..where((t) => t.id.equals(cartId))).go();
   }
 
   Stream<List<CartWithProduct>> getCartsWithProducts() {
