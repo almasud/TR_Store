@@ -1,8 +1,13 @@
 # tr_store
 
-A TR Store application demo.
+A Flutter project that shows an Online store application demo.
 
-## Getting Started
+<p align="center">
+  <img width="250" height="450" src="https://raw.githubusercontent.com/almasud/TR_Store/master/screenshots/prodcuts.png" alt="Product screen"/>
+  <img width="250" height="450" src="https://raw.githubusercontent.com/almasud/TR_Store/master/screenshots/product_details.png" alt="Product details screen"/>
+  <img width="250" height="450" src="https://raw.githubusercontent.com/almasud/TR_Store/master/screenshots/product_carts.png" alt="Product carts screen"/>
+</p>
 
-This project is a TR Store application demo.
 
+##### Thank you all and happy codding...
+[Abdullah Almasud](https://almasud.github.io)
