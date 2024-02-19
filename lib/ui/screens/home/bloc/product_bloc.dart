@@ -10,29 +10,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/domain/repo/product_repo.dart';
+import 'package:tr_store/utils/app_constants.dart';
 
-part 'home_event.dart';
+part 'product_event.dart';
 
-part 'home_state.dart';
+part 'product_state.dart';
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
+class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final ProductRepo productRepo;
 
-  HomeBloc({required this.productRepo}) : super(const HomeState()) {
+  ProductBloc({required this.productRepo})
+      : super(const ProductState.initial()) {
     on<FetchProductsFromRemote>(_onFetchProductsFromRemote);
   }
 
   Future<FutureOr<void>> _onFetchProductsFromRemote(
-      FetchProductsFromRemote event, Emitter<HomeState> emit) async {
+      FetchProductsFromRemote event, Emitter<ProductState> emit) async {
     // Set loading before fetching data from remote
-    emit(state.copyWith(uiStatus: HomeUiStatus.loading));
+    emit(const ProductState.initial());
 
     try {
-      await productRepo.getProductsFromDb().then((products) => emit(
-          state.copyWith(uiStatus: HomeUiStatus.success, products: products)));
+      await productRepo
+          .getProductsFromDb()
+          .then((products) => emit(ProductState.success(products)));
     } on Exception catch (e) {
-      emit(
-          state.copyWith(uiStatus: HomeUiStatus.failed, message: e.toString()));
+      emit(ProductState.failed(e.toString()));
     }
   }
 }

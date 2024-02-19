@@ -11,7 +11,7 @@ import 'package:tr_store/data/repo/cart_repo_impl.dart';
 import 'package:tr_store/data/repo/product_repo_impl.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/ui/screens/cart/cart_screen.dart';
-import 'package:tr_store/ui/screens/home/bloc/home_bloc.dart';
+import 'package:tr_store/ui/screens/home/bloc/product_bloc.dart';
 import 'package:tr_store/ui/screens/home/home_screens.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
@@ -22,7 +22,7 @@ class AppRoute {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
               create: (context) =>
-                  getIt<HomeBloc>()..add(FetchProductsFromRemote()),
+                  getIt<ProductBloc>()..add(FetchProductsFromRemote()),
               child: const HomeScreen(title: AppString.appTitle)),
         );
       case RoutePath.cart:

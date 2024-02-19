@@ -14,7 +14,7 @@ import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
-import 'bloc/home_bloc.dart';
+import 'bloc/product_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -27,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _cartItemCount = 0;
-  final _homeBloc = getIt<HomeBloc>();
+  final _homeBloc = getIt<ProductBloc>();
 
   void _addToCart() {
     setState(() {
@@ -87,26 +87,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<HomeBloc, HomeState>(
+        body: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
             switch (state.uiStatus) {
-              case HomeUiStatus.loading:
+              case ProductStatus.loading:
                 return const Center(child: CircularProgressIndicator(),);
-              case HomeUiStatus.success:
-                return ((state.products?.length ?? 0) > 0)
+              case ProductStatus.success:
+                return state.products.isNotEmpty
                     ? ListView.builder(
-                        itemCount: state.products?.length ?? 0,
+                        itemCount: state.products.length,
                         itemBuilder: (context, index) {
-                          Product? product = state.products?[index];
+                          Product? product = state.products[index];
                           return ProductItem(
-                              name: product?.title ?? "",
-                              description: product?.content ?? "",
-                              price: (product?.userId ?? 0).toDouble(),
-                              thumbnailUrl: product?.thumbnail ?? "",
+                              name: product.title,
+                              description: product.content,
+                              price: (product.userId).toDouble(),
+                              thumbnailUrl: product.thumbnail,
                               onAddToCart: _addToCart);
                         })
                     : const MessageView(message: AppString.dataNotFound);
-              case HomeUiStatus.failed:
+              case ProductStatus.failed:
                 return const ErrorMessageView(message: AppString.failedToLoadData);
             }
           },
@@ -157,7 +157,7 @@ class ProductItem extends StatelessWidget {
                 height: 80,
                 placeholder: (context, url) =>
                     const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+                errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.redAccent,),
               ),
             ),
             const SizedBox(width: 16),

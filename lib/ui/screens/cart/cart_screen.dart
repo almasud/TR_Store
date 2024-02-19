@@ -54,7 +54,7 @@ class _CartScreenState extends State<CartScreen> {
                             width: 80,
                             height: 80,
                             placeholder: (context, url) => const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                            errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.redAccent,),
                           ),
                         ),
                         const SizedBox(width: 16),
