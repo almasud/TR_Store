@@ -7,14 +7,13 @@
 import 'package:tr_store/domain/models/cart_with_product.dart';
 
 abstract class CartRepo {
-
   Stream<int?> getCartsCount();
 
   Future<int> updateProductQuantity(int productId, int newProductQuantity);
 
-  Future<void> insertCart(int productId, int productQuantity);
+  Future<int> insertCart(int productId, int productQuantity);
 
   Future<int> deleteCart(cartId);
 
-  Future<List<CartWithProduct>> getCartsWithProducts();
+  Stream<List<CartWithProduct>> getCartsWithProducts();
 }

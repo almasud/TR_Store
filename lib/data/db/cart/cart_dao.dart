@@ -15,8 +15,8 @@ part 'cart_dao.g.dart';
 class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
   CartDao(AppDatabase appDatabase) : super(appDatabase);
 
-  Future<void> insertCart(int productId, int productQuantity) async {
-    into(carts).insertOnConflictUpdate(CartsCompanion.insert(
+  Future<int> insertCart(int productId, int productQuantity) async {
+    return into(carts).insertOnConflictUpdate(CartsCompanion.insert(
         productQuantity: productQuantity, productId: productId));
   }
 
@@ -43,18 +43,18 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
     return await (delete(carts)..where((t) => t.id.equals(cartId))).go();
   }
 
-  Future<List<CartWithProduct>> getCartsWithProducts() async {
+  Stream<List<CartWithProduct>> getCartsWithProducts() {
     // Perform the join operation using the join method
     final query = select(carts).join([
       innerJoin(products, carts.productId.equalsExp(products.id)),
     ]);
 
     // Map the result to a custom data class
-    return await query.map((row) {
+    return query.map((row) {
       return CartWithProduct(
         cart: row.readTable(carts),
         product: row.readTable(products),
       );
-    }).get();
+    }).watch();
   }
 }

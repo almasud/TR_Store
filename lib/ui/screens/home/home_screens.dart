@@ -8,13 +8,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/db/app_database.dart';
-import 'package:tr_store/data/di/app_component.dart';
+import 'package:tr_store/domain/models/cart_with_product.dart';
 import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
 import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
 import 'bloc/product_bloc.dart';
+import 'bloc/product_cart_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -26,19 +27,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _cartItemCount = 0;
-  final _homeBloc = getIt<ProductBloc>();
+  List<CartWithProduct> _cartsWithProducts = [];
 
-  void _addToCart() {
-    setState(() {
-      _cartItemCount++;
-    });
-  }
-
-  @override
-  void dispose() {
-    _homeBloc.close();
-    super.dispose();
+  void _addToCart(Product product) {
+    context
+        .read<ProductCartBloc>()
+        .add(AddProductToCartRequest(product: product));
+    // context
+    //     .read<ProductBloc>()
+    //     .add(FetchProductsFromRemote());
   }
 
   @override
@@ -61,27 +58,40 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, RoutePath.cart);
                   },
                 ),
-                Visibility(
-                  visible: _cartItemCount > 0,
-                  child: Positioned(
-                    right: 2,
-                    top: 2,
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        radius: 16,
-                        child: Text(
-                          '$_cartItemCount',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                BlocBuilder<ProductCartBloc, ProductCartState>(
+                  builder: (context, state) {
+                    switch (state.uiStatus) {
+                      case ProductCartStatus.fetchCartsWithProductsSuccess:
+                        _cartsWithProducts = state.cartsWithProducts;
+                        debugPrint(
+                            "case fetchCartsWithProductsSuccess: ${_cartsWithProducts.length}");
+
+                        return _cartsWithProducts.isNotEmpty
+                            ? Positioned(
+                                right: 2,
+                                top: 2,
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.red,
+                                    radius: 16,
+                                    child: Text(
+                                      '${_cartsWithProducts.length}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox();
+                      default:
+                        debugPrint("case default: ProductCartState: $state");
+                        return const SizedBox();
+                    }
+                  },
                 ),
               ],
             ),
@@ -91,23 +101,36 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             switch (state.uiStatus) {
               case ProductStatus.loading:
-                return const Center(child: CircularProgressIndicator(),);
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               case ProductStatus.success:
                 return state.products.isNotEmpty
                     ? ListView.builder(
                         itemCount: state.products.length,
                         itemBuilder: (context, index) {
                           Product? product = state.products[index];
+                          bool isAlreadyAdded = false;
+
+                          for (CartWithProduct cartWithProduct
+                              in _cartsWithProducts) {
+                            isAlreadyAdded =
+                                cartWithProduct.product.id == product.id;
+                          }
+
                           return ProductItem(
                               name: product.title,
                               description: product.content,
                               price: (product.userId).toDouble(),
                               thumbnailUrl: product.thumbnail,
-                              onAddToCart: _addToCart);
+                              onAddToCart: !isAlreadyAdded
+                                  ? () => _addToCart(product)
+                                  : null);
                         })
                     : const MessageView(message: AppString.dataNotFound);
               case ProductStatus.failed:
-                return const ErrorMessageView(message: AppString.failedToLoadData);
+                return const ErrorMessageView(
+                    message: AppString.failedToLoadData);
             }
           },
         ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -121,7 +144,7 @@ class ProductItem extends StatelessWidget {
   final String description;
   final double price;
   final String thumbnailUrl;
-  final VoidCallback onAddToCart;
+  final Function()? onAddToCart;
 
   const ProductItem({
     Key? key,
@@ -145,19 +168,16 @@ class ProductItem extends StatelessWidget {
             // Thumbnail
             ClipRRect(
               borderRadius: BorderRadius.circular(4),
-              // child: Image.network(
-              //   thumbnailUrl,
-              //   width: 80,
-              //   height: 80,
-              //   fit: BoxFit.cover,
-              // ),
               child: CachedNetworkImage(
                 imageUrl: thumbnailUrl,
                 width: 80,
                 height: 80,
                 placeholder: (context, url) =>
                     const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.redAccent,),
+                errorWidget: (context, url, error) => const Icon(
+                  Icons.error,
+                  color: Colors.redAccent,
+                ),
               ),
             ),
             const SizedBox(width: 16),

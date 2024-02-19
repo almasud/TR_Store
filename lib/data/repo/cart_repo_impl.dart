@@ -42,7 +42,6 @@ String cartsToJson(List<Cart> carts) =>
     json.encode(carts.map((x) => x.toJson()));
 
 class CartRepoImpl extends CartRepo {
-
   @override
   Future<int> deleteCart(cartId) {
     return appDatabase.cartDao.deleteCart(cartId);
@@ -54,12 +53,12 @@ class CartRepoImpl extends CartRepo {
   }
 
   @override
-  Future<List<CartWithProduct>> getCartsWithProducts() {
+  Stream<List<CartWithProduct>> getCartsWithProducts() {
     return appDatabase.cartDao.getCartsWithProducts();
   }
 
   @override
-  Future<void> insertCart(int productId, int productQuantity) {
+  Future<int> insertCart(int productId, int productQuantity) {
     return appDatabase.cartDao.insertCart(productId, productQuantity);
   }
 

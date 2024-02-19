@@ -7,6 +7,7 @@
 abstract class AppString {
   static const String appTitle = "TR Store";
   static const String cart = "Cart";
+  static const String addToCartSuccess = "Add to cart success";
   static const String noRouteDefineFor = "No route define for";
   static const String total = "Total";
   static const String checkout = "Checkout";

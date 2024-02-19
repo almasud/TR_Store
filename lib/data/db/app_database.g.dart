@@ -438,7 +438,6 @@ class $CartsTable extends Carts with TableInfo<$CartsTable, Cart> {
   @override
   late final GeneratedColumn<DateTime> publishedAt = GeneratedColumn<DateTime>(
       'published_at', aliasedName, true,
-      check: () => publishedAt.isNull(),
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
@@ -457,8 +456,8 @@ class $CartsTable extends Carts with TableInfo<$CartsTable, Cart> {
       'product_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES products (id)'));
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'UNIQUE REFERENCES products (id)'));
   @override
   List<GeneratedColumn> get $columns =>
       [id, productQuantity, publishedAt, updatedAt, productId];

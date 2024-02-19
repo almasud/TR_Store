@@ -10,6 +10,7 @@ import 'package:tr_store/data/repo/product_repo_impl.dart';
 import 'package:tr_store/domain/repo/cart_repo.dart';
 import 'package:tr_store/domain/repo/product_repo.dart';
 import 'package:tr_store/ui/screens/home/bloc/product_bloc.dart';
+import 'package:tr_store/ui/screens/home/bloc/product_cart_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -17,6 +18,9 @@ class AppComponent {
   Future<void> init() async {
     getIt.registerFactory<ProductRepo>(() => ProductRepoImpl());
     getIt.registerFactory<CartRepo>(() => CartRepoImpl());
-    getIt.registerFactory<ProductBloc>(() => ProductBloc(productRepo: getIt<ProductRepo>()));
+    getIt.registerFactory<ProductBloc>(
+        () => ProductBloc(productRepo: getIt<ProductRepo>()));
+    getIt.registerFactory<ProductCartBloc>(
+        () => ProductCartBloc(cartRepo: getIt<CartRepo>()));
   }
 }
