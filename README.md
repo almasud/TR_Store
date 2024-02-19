@@ -1,4 +1,4 @@
-# tr_store
+# Online Store
 
 A Flutter project that shows an Online store application demo.
 

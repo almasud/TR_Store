@@ -63,12 +63,10 @@ class ProductCartBloc extends Bloc<ProductCartEvent, ProductCartState> {
     try {
       List<CartWithProduct> cartsWithProducts = event.cartsWithProducts;
       debugPrint("_onFetchCartsWithProducts: ${cartsWithProducts.length}");
-      if (cartsWithProducts.isNotEmpty) {
-        emit(state.copyWith(
-            cartsWithProducts: cartsWithProducts,
-            productCartStatus: ProductCartStatus.fetchCartsWithProductsSuccess,
-            message: AppString.success));
-      }
+      emit(state.copyWith(
+          cartsWithProducts: cartsWithProducts,
+          productCartStatus: ProductCartStatus.fetchCartsWithProductsSuccess,
+          message: AppString.success));
     } on Exception catch (e) {
       emit(state.copyWith(
           message: e.toString(),
