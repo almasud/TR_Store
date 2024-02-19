@@ -19,7 +19,7 @@ final dummyProducts = [
       id: 1,
       title: "Product 1",
       content:
-      "This the content of the Product 1 sdk sldkjs sdk sdjlskjlsd s sdkjfslkdjf sdjklsdkjfsd  sdljlsjf",
+          "This the content of the Product 1 sdk sldkjs sdk sdjlskjlsd s sdkjfslkdjf sdjklsdkjfsd  sdljlsjf",
       image: "https://picsum.photos/seed/picsum/150/250",
       thumbnail: "https://picsum.photos/seed/picsum/200/300",
       userId: 1,
@@ -89,10 +89,11 @@ class ProductRepoImpl extends ProductRepo {
 
       switch (response.statusCode) {
         case 200:
-          appDatabase.productDao.insertProducts(productsFromJson(response.body));
+          appDatabase.productDao
+              .insertProducts(productsFromJson(response.body));
         default:
           debugPrint("getRepoIssues: error: ${response.reasonPhrase}");
-          // throw "error: ${response.reasonPhrase}";
+        // throw "error: ${response.reasonPhrase}";
       }
     } on HttpException catch (e) {
       debugPrint("getRepoIssues: HttpException: ${e.message}");
@@ -106,5 +107,10 @@ class ProductRepoImpl extends ProductRepo {
   @override
   Future<void> insertProductsToDb(List<Product> products) async {
     await appDatabase.productDao.insertProducts(products);
+  }
+
+  @override
+  Future<Product> getProductFromDb(int id) async {
+    return await appDatabase.productDao.getProduct(id);
   }
 }

@@ -12,21 +12,21 @@ import 'package:tr_store/ui/app_widgets/app_snack_bar.dart';
 import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
 import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
+import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
 import 'bloc/product_bloc.dart';
-import '../bloc/product_cart_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
+class ProductScreen extends StatefulWidget {
   final String title;
 
-  const HomeScreen({super.key, required this.title});
+  const ProductScreen({super.key, required this.title});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ProductScreen> createState() => _ProductScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ProductScreenState extends State<ProductScreen> {
   void _addToCart(Product product) {
     context.read<ProductCartBloc>().add(AddProductToCart(product: product));
   }
@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 BlocConsumer<ProductCartBloc, ProductCartState>(
                   listener: (context, state) {
-                    debugPrint("$HomeScreen: ProductCartState: $state");
+                    debugPrint("$ProductScreen: ProductCartState: $state");
                     if (state.productCartStatus ==
                         ProductCartStatus.addToCartFailed) {
                       // AppSnackBar.show(
@@ -97,29 +97,39 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
-            switch (state.uiStatus) {
+            switch (state.productStatus) {
               case ProductStatus.loading:
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
-              case ProductStatus.success:
-                return state.products.isNotEmpty
+              case ProductStatus.fetchProductsSuccess:
+                return state.products?.isNotEmpty ?? false
                     ? ListView.builder(
-                        itemCount: state.products.length,
+                        itemCount: state.products?.length,
                         itemBuilder: (context, index) {
-                          Product? product = state.products[index];
+                          Product? product = state.products![index];
 
-                          return ProductItem(
-                              name: product.title,
-                              description: product.content,
-                              price: (product.userId).toDouble(),
-                              thumbnailUrl: product.thumbnail,
-                              onAddToCart: () => _addToCart(product));
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, RoutePath.productDetails,
+                                  arguments: product);
+                            },
+                            child: ProductItem(
+                                name: product.title,
+                                description: product.content,
+                                price: (product.userId).toDouble(),
+                                thumbnailUrl: product.thumbnail,
+                                onAddToCart: () => _addToCart(product)),
+                          );
                         })
                     : const MessageView(message: AppString.noDataFound);
-              case ProductStatus.failed:
+              case ProductStatus.fetchProductsFailed:
                 return const ErrorMessageView(
                     message: AppString.failedToLoadData);
+              default:
+                return const ErrorMessageView(
+                    message: AppString.somethingWentWrong);
             }
           },
         ), // This trailing comma makes auto-formatting nicer for build methods.

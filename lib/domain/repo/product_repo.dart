@@ -9,6 +9,8 @@ import 'package:tr_store/data/db/app_database.dart';
 abstract class ProductRepo {
   Future<List<Product>> getProductsFromDb();
 
+  Future<Product> getProductFromDb(int id);
+
   Future<void> loadProductsFromRemote();
 
   Future<void> insertProductsToDb(List<Product> products);

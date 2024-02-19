@@ -9,7 +9,7 @@ import 'package:tr_store/data/repo/cart_repo_impl.dart';
 import 'package:tr_store/data/repo/product_repo_impl.dart';
 import 'package:tr_store/domain/repo/cart_repo.dart';
 import 'package:tr_store/domain/repo/product_repo.dart';
-import 'package:tr_store/ui/screens/home/bloc/product_bloc.dart';
+import 'package:tr_store/ui/screens/product/bloc/product_bloc.dart';
 import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
 
 final getIt = GetIt.instance;

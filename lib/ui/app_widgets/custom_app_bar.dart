@@ -36,7 +36,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       width: double.infinity,
       height: kToolbarHeight,
       child: Padding(
-        padding: const EdgeInsets.only(left: 16),
+        padding: const EdgeInsets.only(left: 8, right: 4),
         child: Row(
           children: [
             if (widget.showBackButton)
@@ -49,19 +49,20 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     size: 22,
                     color: Colors.white,
                   )),
-            if (widget.showBackButton)
+            if (!widget.showBackButton)
               const SizedBox(
                 width: 8,
               ),
-            Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
+            Expanded(
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    overflow: TextOverflow.ellipsis),
               ),
             ),
-            const Spacer(),
             if (widget.actions != null && widget.actions!.isNotEmpty)
               Row(
                 children: widget.actions!,

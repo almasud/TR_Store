@@ -9,9 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/di/app_component.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/ui/screens/cart/cart_screen.dart';
-import 'package:tr_store/ui/screens/home/bloc/product_bloc.dart';
+import 'package:tr_store/ui/screens/product/bloc/product_bloc.dart';
 import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
-import 'package:tr_store/ui/screens/home/home_screens.dart';
+import 'package:tr_store/ui/screens/product/product_details_screen.dart';
+import 'package:tr_store/ui/screens/product/product_screens.dart';
 import 'package:tr_store/utils/app_constants.dart';
 
 class AppRoute {
@@ -24,7 +25,7 @@ class AppRoute {
             BlocProvider(
                 create: (context) =>
                     getIt<ProductBloc>()..add(FetchProductsFromRemote())),
-          ], child: const HomeScreen(title: AppString.appTitle)),
+          ], child: const ProductScreen(title: AppString.appTitle)),
         );
       case RoutePath.cart:
         return MaterialPageRoute(
@@ -33,6 +34,13 @@ class AppRoute {
             child: const CartScreen(),
           ),
         );
+      case RoutePath.productDetails:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => getIt<ProductCartBloc>(),
+                  child: const ProductDetailsScreen(),
+                ),
+            settings: routeSettings);
       default:
         return MaterialPageRoute(
             builder: (BuildContext context) => Scaffold(

@@ -14,3 +14,12 @@ class FetchProductsFromRemote extends ProductEvent {
   @override
   List<Object?> get props => [];
 }
+
+class GetProductsFromDb extends ProductEvent {
+  final int productId;
+
+  const GetProductsFromDb({required this.productId});
+
+  @override
+  List<Object?> get props => [productId];
+}
