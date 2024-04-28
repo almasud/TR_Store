@@ -20,12 +20,10 @@ part 'product_cart_state.dart';
 
 class ProductCartBloc extends Bloc<ProductCartEvent, ProductCartState> {
   final CartRepo cartRepo;
-  late StreamSubscription<List<CartWithProduct>> _cartsWithProductsSubscription;
 
   ProductCartBloc({required this.cartRepo}) : super(const ProductCartState()) {
     // Listen the cartsWithProducts source stream
-    _cartsWithProductsSubscription =
-        cartRepo.getCartsWithProducts().listen((cartsWithProducts) {
+    cartRepo.getCartsWithProducts().listen((cartsWithProducts) {
       // When new cartsWithProducts is received, emit a new state
       add(FetchCartWithProduct(cartsWithProducts: cartsWithProducts));
     });
@@ -34,13 +32,6 @@ class ProductCartBloc extends Bloc<ProductCartEvent, ProductCartState> {
     on<FetchCartWithProduct>(_onFetchCartsWithProducts);
     on<UpdateProductQuantityToCart>(_onUpdateProductQuantityToCart);
     on<DeleteProductsFromCart>(_onDeleteProductsFromCart);
-  }
-
-  @override
-  Future<void> close() {
-    _cartsWithProductsSubscription
-        .cancel(); // Cancel the subscription when closing the bloc
-    return super.close();
   }
 
   FutureOr<void> _onAddProductToCart(
