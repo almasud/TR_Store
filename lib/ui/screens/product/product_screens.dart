@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/ui/app_widgets/app_snack_bar.dart';
-import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/ui/app_widgets/app_bar.dart';
 import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
@@ -33,69 +33,64 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: CustomAppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: widget.title,
-          showBackButton: false,
-          actions: [
-            Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RoutePath.cart);
-                  },
+    return Scaffold(
+      appBar: TrAppBar(
+        title: widget.title,
+        showBackButton: false,
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
                 ),
-                BlocConsumer<ProductCartBloc, ProductCartState>(
-                  listener: (context, state) {
-                    debugPrint("$ProductScreen: ProductCartState: $state");
-                    if (state.productCartStatus ==
-                        ProductCartStatus.addToCartFailed) {
-                      // AppSnackBar.show(
-                      //     context: context,
-                      //     message: AppString.addToCartSuccessFailed,
-                      //     color: Colors.redAccent);
-                      AppSnackBar.show(
-                          context: context,
-                          message: AppString.itSeemsAlreadyAddedToCart,
-                          color: Colors.blueAccent.withOpacity(0.7));
-                    }
-                  },
-                  builder: (context, state) {
-                    return Visibility(
-                      visible: state.cartsWithProducts?.isNotEmpty ?? false,
-                      child: Positioned(
-                        right: 2,
-                        top: 2,
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.red,
-                            radius: 16,
-                            child: Text(
-                              '${state.cartsWithProducts?.length}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
+                onPressed: () {
+                  Navigator.pushNamed(context, RoutePath.cart);
+                },
+              ),
+              BlocConsumer<ProductCartBloc, ProductCartState>(
+                listener: (context, state) {
+                  debugPrint("$ProductScreen: ProductCartState: $state");
+                  if (state.productCartStatus ==
+                      ProductCartStatus.addToCartFailed) {
+                    AppSnackBar.show(
+                        context: context,
+                        message: AppString.itSeemsAlreadyAddedToCart,
+                        color: Colors.blueAccent.withValues(alpha:0.7));
+                  }
+                },
+                builder: (context, state) {
+                  return Visibility(
+                    visible: state.cartsWithProducts?.isNotEmpty ?? false,
+                    child: Positioned(
+                      right: 2,
+                      top: 2,
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.red,
+                          radius: 16,
+                          child: Text(
+                            '${state.cartsWithProducts?.length}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: BlocBuilder<ProductBloc, ProductState>(
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
             switch (state.productStatus) {
               case ProductStatus.loading:
@@ -132,8 +127,8 @@ class _ProductScreenState extends State<ProductScreen> {
                     message: AppString.somethingWentWrong);
             }
           },
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+        ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
@@ -146,13 +141,13 @@ class ProductItem extends StatelessWidget {
   final Function()? onAddToCart;
 
   const ProductItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.description,
     required this.price,
     required this.thumbnailUrl,
     required this.onAddToCart,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +213,7 @@ class ProductItem extends StatelessWidget {
             ElevatedButton(
               onPressed: onAddToCart,
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
               ),
               child: const Icon(
                 Icons.shopping_cart,

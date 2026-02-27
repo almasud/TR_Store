@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/data/db/app_database.dart';
 import 'package:tr_store/ui/app_widgets/app_snack_bar.dart';
-import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/ui/app_widgets/app_bar.dart';
 import 'package:tr_store/ui/routes/route_path.dart';
 import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
 import 'package:tr_store/utils/app_constants.dart';
@@ -34,53 +34,53 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     // settings and cast them as Dot.
     _product = ModalRoute.of(context)!.settings.arguments as Product;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: CustomAppBar(
-          title: _product?.title ?? AppString.productDetails,
-          actions: [
-            Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RoutePath.cart);
-                  },
+    return Scaffold(
+      appBar: TrAppBar(
+        title: _product?.title ?? AppString.productDetails,
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
                 ),
-                BlocBuilder<ProductCartBloc, ProductCartState>(
-                  builder: (context, state) {
-                    return Visibility(
-                      visible: state.cartsWithProducts?.isNotEmpty ?? false,
-                      child: Positioned(
-                        right: 2,
-                        top: 2,
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.red,
-                            radius: 16,
-                            child: Text(
-                              '${state.cartsWithProducts?.length}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
+                onPressed: () {
+                  Navigator.pushNamed(context, RoutePath.cart);
+                },
+              ),
+              BlocBuilder<ProductCartBloc, ProductCartState>(
+                builder: (context, state) {
+                  return Visibility(
+                    visible: state.cartsWithProducts?.isNotEmpty ?? false,
+                    child: Positioned(
+                      right: 2,
+                      top: 2,
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.red,
+                          radius: 16,
+                          child: Text(
+                            '${state.cartsWithProducts?.length}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: BlocConsumer<ProductCartBloc, ProductCartState>(
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: BlocConsumer<ProductCartBloc, ProductCartState>(
           listener: (context, state) {
             debugPrint("$ProductDetailsScreen: ProductCartState: $state");
             if (state.productCartStatus == ProductCartStatus.addToCartFailed) {
@@ -91,7 +91,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               AppSnackBar.show(
                   context: context,
                   message: AppString.itSeemsAlreadyAddedToCart,
-                  color: Colors.blueAccent.withOpacity(0.7));
+                  color: Colors.blueAccent.withValues(alpha:0.7));
             }
           },
           builder: (context, state) {
@@ -141,10 +141,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
                   ),
                 ),
-                Card(
-                  margin: EdgeInsets.zero,
-                  shape: const Border(),
-                  elevation: 8,
+                SizedBox(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(

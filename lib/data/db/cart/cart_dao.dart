@@ -13,7 +13,7 @@ part 'cart_dao.g.dart';
 
 @DriftAccessor(tables: [Carts])
 class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
-  CartDao(AppDatabase appDatabase) : super(appDatabase);
+  CartDao(super.appDatabase);
 
   Future<int> insertCart(int productId, int productQuantity) async {
     return into(carts).insertOnConflictUpdate(CartsCompanion.insert(
@@ -39,7 +39,7 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
     return query.map((row) => row.read(countExp)).watchSingle();
   }
 
-  Future<void> deleteCart(cartId) async {
+  Future<void> deleteCart(int cartId) async {
     await (delete(carts)..where((t) => t.id.equals(cartId))).go();
   }
 

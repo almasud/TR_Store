@@ -6,20 +6,14 @@
 
 part of 'product_bloc.dart';
 
-abstract class ProductEvent extends Equatable {
+sealed class ProductEvent {
   const ProductEvent();
 }
 
-class FetchProductsFromRemote extends ProductEvent {
-  @override
-  List<Object?> get props => [];
-}
+class FetchProductsFromRemote extends ProductEvent {}
 
 class GetProductsFromDb extends ProductEvent {
   final int productId;
 
   const GetProductsFromDb({required this.productId});
-
-  @override
-  List<Object?> get props => [productId];
 }

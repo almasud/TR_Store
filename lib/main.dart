@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'TR Store Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,

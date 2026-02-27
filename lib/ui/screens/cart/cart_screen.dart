@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tr_store/domain/models/cart_with_product.dart';
 import 'package:tr_store/ui/app_widgets/app_snack_bar.dart';
-import 'package:tr_store/ui/app_widgets/custom_app_bar.dart';
+import 'package:tr_store/ui/app_widgets/app_bar.dart';
 import 'package:tr_store/ui/app_widgets/error_message.dart';
 import 'package:tr_store/ui/screens/bloc/product_cart_bloc.dart';
 import 'package:tr_store/utils/app_constants.dart';
@@ -24,15 +24,15 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          title: AppString.cart,
-        ),
-        body: BlocBuilder<ProductCartBloc, ProductCartState>(
+    return Scaffold(
+      appBar: const TrAppBar(
+        title: AppString.cart,
+      ),
+      body: SafeArea(
+        child: BlocBuilder<ProductCartBloc, ProductCartState>(
           builder: (context, state) {
             List<CartWithProduct>? cartsWithProducts = state.cartsWithProducts;
-
+        
             return (cartsWithProducts?.isNotEmpty ?? false)
                 ? Column(
                     children: [
@@ -47,7 +47,7 @@ class _CartScreenState extends State<CartScreen> {
                             final product = cartsWithProducts
                                 .map((e) => e.product)
                                 .firstWhere((p) => p.id == cart.productId);
-
+        
                             return Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(
@@ -151,10 +151,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       Visibility(
                         visible: cartsWithProducts?.isNotEmpty ?? false,
-                        child: Card(
-                          margin: EdgeInsets.zero,
-                          shape: const Border(),
-                          elevation: 8,
+                        child: SizedBox(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -181,11 +178,11 @@ class _CartScreenState extends State<CartScreen> {
                                         message:
                                             AppString.thisFeatureIsComingSoon,
                                         color:
-                                            Colors.blueAccent.withOpacity(0.7));
+                                            Colors.blueAccent.withValues(alpha:0.7));
                                   },
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all(Colors.blue),
+                                        WidgetStateProperty.all(Colors.blue),
                                   ),
                                   child: const Text(
                                     AppString.checkout,
