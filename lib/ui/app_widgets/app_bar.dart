@@ -31,12 +31,11 @@ class _TrAppBarState extends State<TrAppBar> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: widget.backgroundColor ??
-            Theme.of(context).colorScheme.primary,
+        color: widget.backgroundColor ?? Theme.of(context).colorScheme.primary,
         width: double.infinity,
         height: kToolbarHeight,
         child: Padding(
-          padding: const EdgeInsets.only(left: 8, right: 4),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
               if (widget.showBackButton)
@@ -48,11 +47,9 @@ class _TrAppBarState extends State<TrAppBar> {
                       Icons.arrow_back_ios_outlined,
                       size: 22,
                       color: Colors.white,
-                    )),
-              if (!widget.showBackButton)
-                const SizedBox(
-                  width: 8,
-                ),
+                    ))
+              else
+                const SizedBox(),
               Expanded(
                 child: Text(
                   widget.title,
